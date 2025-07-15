@@ -246,9 +246,6 @@ class IrysService:
                                 name
                                 value
                             }
-                            block {
-                                timestamp
-                            }
                         }
                     }
                 }
