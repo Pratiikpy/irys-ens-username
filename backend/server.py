@@ -416,6 +416,21 @@ async def resolve_username(username: str):
         logger.error(f"Resolve username error: {error}")
         raise HTTPException(status_code=500, detail="Failed to resolve username")
 
+@app.get("/api/usernames")
+async def get_usernames(limit: int = 100):
+    """Get all registered usernames for leaderboard"""
+    try:
+        usernames = await irys_service.get_all_usernames(limit)
+        
+        return {
+            "usernames": [username.dict() for username in usernames],
+            "count": len(usernames)
+        }
+        
+    except Exception as error:
+        logger.error(f"Get usernames error: {error}")
+        raise HTTPException(status_code=500, detail="Failed to fetch usernames")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
