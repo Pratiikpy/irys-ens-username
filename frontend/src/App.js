@@ -269,15 +269,20 @@ const UsernameResolver = () => {
               <span className="tx-id">{result.id}</span>
             </div>
             <div className="detail-item">
-              <strong>View on Irys:</strong> 
-              <a 
-                href={`https://gateway.irys.xyz/${result.id}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="irys-link"
-              >
-                View Data
-              </a>
+              <strong>Status:</strong> 
+              <span className="status-info">
+                {result.id.startsWith('mock_') ? 
+                  '🔄 Demo Mode (Real Irys integration pending)' : 
+                  <a 
+                    href={`https://gateway.irys.xyz/${result.id}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="irys-link"
+                  >
+                    View Data on Irys
+                  </a>
+                }
+              </span>
             </div>
           </div>
         </div>
