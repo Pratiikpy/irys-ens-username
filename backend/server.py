@@ -137,10 +137,6 @@ class IrysService:
             }
             """
             
-            # Check in-memory storage first (for demo)
-            if hasattr(self, '_storage') and normalized_username in self._storage:
-                return False
-            
             # Make GraphQL request to Irys
             async with httpx.AsyncClient() as client:
                 response = await client.post(
