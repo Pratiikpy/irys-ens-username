@@ -198,21 +198,29 @@ const UsernameResolver = () => {
   const [message, setMessage] = useState('');
 
   const resolveName = async () => {
-    if (!queryName) return;
+    if (!queryName) {
+      setMessage('Please enter a username');
+      return;
+    }
     
     setLoading(true);
     setMessage('');
     setResult(null);
     
     try {
+      console.log('Resolving username:', queryName);
       const response = await axios.get(`${API_URL}/api/resolve/${queryName}`);
+      console.log('Resolve response:', response.data);
       setResult(response.data);
+      setMessage(''); // Clear any previous error messages
     } catch (err) {
+      console.error('Resolve error:', err);
       if (err.response?.status === 404) {
-        setMessage(`Name "${queryName}.irys" not found.`);
+        setMessage(`Username "${queryName}.irys" not found.`);
       } else {
-        setMessage('Error resolving username.');
+        setMessage(`Error resolving username: ${err.response?.data?.detail || err.message}`);
       }
+      setResult(null);
     } finally {
       setLoading(false);
     }
