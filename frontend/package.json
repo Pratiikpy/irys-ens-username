@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@irys/sdk": "^0.2.11",
     "axios": "^1.10.0",
     "cra-template": "1.2.0",
     "ethers": "^6.15.0",
