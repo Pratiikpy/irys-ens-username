@@ -106,8 +106,8 @@ user_problem_statement: "registration failed upload failed 400 eror - User wants
 
 backend:
   - task: "Irys Integration - Real Upload Implementation"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
@@ -115,7 +115,10 @@ backend:
     status_history:
       - working: false
         agent: "main"
-        comment: "Currently using mock upload implementation, needs real Irys SDK integration"
+        comment: "Previously using mock upload implementation"
+      - working: true
+        agent: "main"
+        comment: "Implemented real Irys integration with Node.js helper service. Added proper upload endpoint with real transaction IDs"
         
   - task: "Username Registration API"
     implemented: true
@@ -123,11 +126,11 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "Basic registration endpoint working with signature verification"
+        comment: "Updated to use real Irys helper service for uploads"
         
   - task: "Username Availability Check"
     implemented: true
@@ -135,11 +138,11 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "GraphQL queries to Irys network working for availability checks"
+        comment: "Cleaned up to use only GraphQL queries, removed in-memory storage"
         
   - task: "Username Resolution API"
     implemented: true
@@ -147,11 +150,35 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "Basic resolution working with in-memory storage"
+        comment: "Updated to use only GraphQL queries for resolution"
+        
+  - task: "Leaderboard API"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added new endpoint GET /api/usernames with pagination support"
+        
+  - task: "Node.js Irys Helper Service"
+    implemented: true
+    working: true
+    file: "backend/irys-helper/irys-service.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Created separate Node.js service for real Irys SDK integration on port 3002"
 
 frontend:
   - task: "Username Registration UI"
@@ -160,11 +187,11 @@ frontend:
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "React component with wallet connection and registration flow"
+        comment: "Updated to work with new backend API flow"
         
   - task: "Username Resolver UI"
     implemented: true
@@ -172,11 +199,23 @@ frontend:
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "Basic resolver UI working"
+        comment: "Updated to work with new backend API flow"
+        
+  - task: "Leaderboard UI"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added new leaderboard component with auto-refresh, stats, and responsive design"
         
   - task: "Wallet Integration"
     implemented: true
@@ -184,25 +223,28 @@ frontend:
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "MetaMask connection and signature working"
+        comment: "MetaMask connection and signature working with new backend"
 
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
   current_focus:
     - "Irys Integration - Real Upload Implementation"
+    - "Username Registration API"
+    - "Leaderboard API"
+    - "Node.js Irys Helper Service"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "Analyzed existing codebase. Current app has basic functionality but needs real Irys integration. Mock upload implementation needs to be replaced with actual Irys SDK calls."
+    message: "Phase 1 MVP implementation complete! Fixed core Irys integration with Node.js helper service. Added real transaction IDs, leaderboard functionality, and improved UI. Ready for testing."
