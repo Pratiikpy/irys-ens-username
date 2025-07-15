@@ -156,7 +156,7 @@ const UsernameRegistration = () => {
               setUsername(e.target.value.toLowerCase());
               setAvailability(null);
             }}
-            disabled={!connected || loading}
+            disabled={loading}
             className="username-input"
           />
           <span className="domain-suffix">.irys</span>
