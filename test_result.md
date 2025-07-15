@@ -111,7 +111,7 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
@@ -119,6 +119,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Implemented real Irys integration with Node.js helper service. Added proper upload endpoint with real transaction IDs"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Real Irys integration working perfectly. Node.js helper service on port 3002 is healthy and generating real transaction IDs. Fixed GraphQL endpoint URL from gateway.irys.xyz to devnet.irys.xyz. All uploads successful with real tx IDs like 6BQUiPYpz5dqLXBrHAAmvodod3d5Rtxn76HgvAfALktn"
         
   - task: "Username Registration API"
     implemented: true
@@ -126,11 +129,14 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Updated to use real Irys helper service for uploads"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Registration API working perfectly. Signature verification working, availability checks working, real Irys uploads with transaction IDs. Proper error handling for taken usernames (409) and invalid signatures (401)"
         
   - task: "Username Availability Check"
     implemented: true
@@ -138,11 +144,14 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Cleaned up to use only GraphQL queries, removed in-memory storage"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Availability check working perfectly via GraphQL queries to Irys devnet. Correctly identifies taken usernames (demo=false) and available ones (testuser123=true). Proper validation for invalid username formats"
         
   - task: "Username Resolution API"
     implemented: true
@@ -150,11 +159,14 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Updated to use only GraphQL queries for resolution"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Resolution API working perfectly. Fixed GraphQL query by removing unsupported 'block' field. Successfully resolves usernames to owner addresses with transaction IDs and timestamps from Irys tags"
         
   - task: "Leaderboard API"
     implemented: true
@@ -162,11 +174,14 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Added new endpoint GET /api/usernames with pagination support"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Leaderboard API working perfectly. Fixed GraphQL query by removing unsupported 'sort' parameter. Returns all registered usernames with pagination support. Currently showing 6 registered usernames with real data"
         
   - task: "Node.js Irys Helper Service"
     implemented: true
@@ -174,11 +189,14 @@ backend:
     file: "backend/irys-helper/irys-service.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Created separate Node.js service for real Irys SDK integration on port 3002"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Node.js helper service working perfectly. Running on port 3002, healthy status, Irys client initialized successfully. Real uploads to Irys devnet working with proper transaction IDs. Balance check working (currently 0 but uploads still work on devnet)"
 
 frontend:
   - task: "Username Registration UI"
