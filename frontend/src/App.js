@@ -291,6 +291,103 @@ const UsernameResolver = () => {
   );
 };
 
+// Leaderboard Component
+const Leaderboard = () => {
+  const [usernames, setUsernames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchUsernames();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchUsernames, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchUsernames = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_URL}/api/usernames?limit=100`);
+      setUsernames(response.data.usernames);
+      setError('');
+    } catch (err) {
+      console.error('Error fetching usernames:', err);
+      setError('Failed to load usernames');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'Unknown';
+    return new Date(timestamp).toLocaleDateString();
+  };
+
+  const formatAddress = (address) => {
+    if (!address) return 'Unknown';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  if (loading && usernames.length === 0) {
+    return (
+      <div className="leaderboard-container">
+        <h2>🏆 Username Leaderboard</h2>
+        <div className="loading-message">Loading usernames...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="leaderboard-container">
+      <h2>🏆 Username Leaderboard</h2>
+      <div className="leaderboard-stats">
+        <div className="stat">
+          <span className="stat-number">{usernames.length}</span>
+          <span className="stat-label">Total Registered</span>
+        </div>
+        <div className="stat">
+          <span className="stat-number">{new Set(usernames.map(u => u.owner)).size}</span>
+          <span className="stat-label">Unique Owners</span>
+        </div>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      {usernames.length > 0 ? (
+        <div className="leaderboard-table">
+          <div className="table-header">
+            <div className="col-rank">Rank</div>
+            <div className="col-username">Username</div>
+            <div className="col-owner">Owner</div>
+            <div className="col-date">Registered</div>
+          </div>
+          
+          {usernames.map((user, index) => (
+            <div key={user.id} className="table-row">
+              <div className="col-rank">#{index + 1}</div>
+              <div className="col-username">
+                <span className="username-text">{user.username}</span>
+                <span className="domain-suffix">.irys</span>
+              </div>
+              <div className="col-owner">
+                <span className="address-text" title={user.owner}>
+                  {formatAddress(user.owner)}
+                </span>
+              </div>
+              <div className="col-date">{formatDate(user.timestamp)}</div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="empty-state">
+          <p>No usernames registered yet.</p>
+          <p>Be the first to register a username!</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Main App Component
 const App = () => {
   const [activeTab, setActiveTab] = useState('register');
@@ -310,11 +407,18 @@ const App = () => {
         >
           Resolve
         </button>
+        <button 
+          onClick={() => setActiveTab('leaderboard')}
+          className={activeTab === 'leaderboard' ? 'tab active' : 'tab'}
+        >
+          Leaderboard
+        </button>
       </nav>
 
       <main className="main-content">
         {activeTab === 'register' && <UsernameRegistration />}
         {activeTab === 'resolve' && <UsernameResolver />}
+        {activeTab === 'leaderboard' && <Leaderboard />}
       </main>
     </div>
   );
