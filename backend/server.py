@@ -227,6 +227,72 @@ class IrysService:
         except Exception as error:
             logger.error(f"Resolve username error: {error}")
             return None
+            
+    async def get_all_usernames(self, limit: int = 100) -> List[UsernameRecord]:
+        """Get all registered usernames for leaderboard"""
+        try:
+            # Use real GraphQL query to Irys
+            query = """
+            query($limit: Int!) {
+                transactions(
+                    tags: [
+                        { name: "App-Name", values: ["IrysUsername"] },
+                        { name: "Type", values: ["username-registration"] }
+                    ],
+                    first: $limit,
+                    sort: HEIGHT_DESC
+                ) {
+                    edges {
+                        node {
+                            id
+                            tags {
+                                name
+                                value
+                            }
+                            block {
+                                timestamp
+                            }
+                        }
+                    }
+                }
+            }
+            """
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    self.graphql_url,
+                    json={
+                        "query": query,
+                        "variables": {"limit": limit}
+                    },
+                    headers={"Content-Type": "application/json"},
+                    timeout=10.0
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    edges = result.get("data", {}).get("transactions", {}).get("edges", [])
+                    
+                    usernames = []
+                    for edge in edges:
+                        node = edge["node"]
+                        tags = {tag["name"]: tag["value"] for tag in node["tags"]}
+                        
+                        usernames.append(UsernameRecord(
+                            id=node["id"],
+                            username=tags.get("Username", ""),
+                            owner=tags.get("Owner", ""),
+                            timestamp=int(tags.get("Timestamp", 0))
+                        ))
+                    
+                    return usernames
+                else:
+                    logger.error(f"GraphQL query failed with status {response.status_code}")
+                    return []
+            
+        except Exception as error:
+            logger.error(f"Get all usernames error: {error}")
+            return []
 
 # Initialize Irys service
 irys_service = IrysService()
