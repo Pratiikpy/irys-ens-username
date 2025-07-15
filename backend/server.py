@@ -173,11 +173,6 @@ class IrysService:
         try:
             normalized_username = username.lower()
             
-            # Check in-memory storage first (for demo)
-            if hasattr(self, '_storage') and normalized_username in self._storage:
-                record = self._storage[normalized_username]
-                return UsernameRecord(**record)
-            
             # Use real GraphQL query to Irys
             query = """
             query($username: String!) {
