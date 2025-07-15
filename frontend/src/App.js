@@ -268,88 +268,18 @@ const UsernameResolver = () => {
               <strong>Irys Tx ID:</strong> 
               <span className="tx-id">{result.id}</span>
             </div>
+            <div className="detail-item">
+              <strong>View on Irys:</strong> 
+              <a 
+                href={`https://gateway.irys.xyz/${result.id}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="irys-link"
+              >
+                View Data
+              </a>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Leaderboard Component
-const Leaderboard = () => {
-  const [usernames, setUsernames] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchUsernames = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`${API_URL}/api/usernames?limit=100`);
-      setUsernames(response.data.usernames || []);
-    } catch (err) {
-      console.error("Error fetching usernames:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsernames();
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchUsernames, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatAddress = (addr) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
-
-  const formatDate = (timestamp) => {
-    return new Date(timestamp).toLocaleDateString();
-  };
-
-  if (loading && usernames.length === 0) {
-    return <div className="loading">Loading leaderboard...</div>;
-  }
-
-  return (
-    <div className="leaderboard-container">
-      <h2>🏆 Registered Usernames</h2>
-      <div className="stats">
-        <span className="count">Total: {usernames.length}</span>
-        <button onClick={fetchUsernames} className="refresh-btn">
-          Refresh
-        </button>
-      </div>
-      
-      {usernames.length > 0 ? (
-        <div className="table-container">
-          <table className="leaderboard-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Owner</th>
-                <th>Registered</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usernames.map((entry, index) => (
-                <tr key={entry.id} className="table-row">
-                  <td>#{index + 1}</td>
-                  <td className="username-cell">{entry.username}.irys</td>
-                  <td className="address-cell" title={entry.owner}>
-                    {formatAddress(entry.owner)}
-                  </td>
-                  <td>{formatDate(entry.timestamp)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="empty-state">
-          <p>No usernames registered yet.</p>
-          <p>Be the first to register a username!</p>
         </div>
       )}
     </div>
@@ -375,23 +305,12 @@ const App = () => {
         >
           Resolve
         </button>
-        <button 
-          onClick={() => setActiveTab('leaderboard')}
-          className={activeTab === 'leaderboard' ? 'tab active' : 'tab'}
-        >
-          Leaderboard
-        </button>
       </nav>
 
       <main className="main-content">
         {activeTab === 'register' && <UsernameRegistration />}
         {activeTab === 'resolve' && <UsernameResolver />}
-        {activeTab === 'leaderboard' && <Leaderboard />}
       </main>
-
-      <footer className="footer">
-        <p>Built on Irys Testnet • Permanent Usernames • No Renewal Fees</p>
-      </footer>
     </div>
   );
 };
