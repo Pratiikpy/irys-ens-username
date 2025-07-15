@@ -165,7 +165,7 @@ const UsernameRegistration = () => {
         <div className="actions">
           <button 
             onClick={checkAvailability}
-            disabled={!connected || loading || !username}
+            disabled={loading || !username}
             className="check-btn"
           >
             {loading ? 'Checking...' : 'Check Availability'}
