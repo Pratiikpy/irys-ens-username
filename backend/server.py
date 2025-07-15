@@ -31,7 +31,7 @@ app.add_middleware(
 # Environment variables
 PRIVATE_KEY = os.environ.get("PRIVATE_KEY", "725bbe9ad10ef6b48397d37501ff0c908119fdc0513a85a046884fc9157c80f5")
 IRYS_GATEWAY_URL = "https://gateway.irys.xyz"
-IRYS_GRAPHQL_URL = "https://gateway.irys.xyz/graphql"
+IRYS_GRAPHQL_URL = "https://devnet.irys.xyz/graphql"
 
 # Pydantic models
 class UsernameRegistrationRequest(BaseModel):
