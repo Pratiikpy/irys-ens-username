@@ -236,8 +236,7 @@ class IrysService:
                         { name: "App-Name", values: ["IrysUsername"] },
                         { name: "Type", values: ["username-registration"] }
                     ],
-                    first: $limit,
-                    sort: HEIGHT_DESC
+                    first: $limit
                 ) {
                     edges {
                         node {
