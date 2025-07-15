@@ -12,7 +12,7 @@ from eth_account import Account
 from eth_account.messages import encode_defunct
 
 class IrysUsernameAPITester:
-    def __init__(self, base_url="https://af7a6df2-50e4-4453-8477-423f60035a12.preview.emergentagent.com"):
+    def __init__(self, base_url="https://21634889-fe90-4c12-9e5c-0335cc5de06f.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
