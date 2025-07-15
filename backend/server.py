@@ -72,53 +72,37 @@ class IrysService:
         return re.match(r'^[a-zA-Z0-9_]+$', username) is not None
     
     async def upload_username_to_irys(self, username: str, owner_address: str, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Upload username data to Irys using web uploader endpoint"""
+        """Upload username data to Irys using Node.js helper service"""
         try:
             normalized_username = username.lower()
             normalized_owner = owner_address.lower()
-            timestamp = int(datetime.now().timestamp() * 1000)
             
-            # Prepare data payload
-            data = {
+            # Prepare data for Irys helper service
+            upload_data = {
                 "username": normalized_username,
                 "owner": normalized_owner,
-                "timestamp": timestamp,
-                "metadata": metadata or {},
-                "version": "1.0.0"
+                "metadata": metadata or {}
             }
             
-            # For now, since we don't have Node.js Irys SDK in Python,
-            # we'll use a direct HTTP approach to the Irys bundler
-            # This is a simplified implementation - in production you'd use the proper SDK
+            logger.info(f"Uploading username '{username}' to Irys via helper service")
             
-            # Generate a mock transaction ID based on username and timestamp
-            # In real implementation, this would come from actual Irys upload
-            import hashlib
-            tx_data = f"{normalized_username}_{normalized_owner}_{timestamp}"
-            mock_tx_id = hashlib.sha256(tx_data.encode()).hexdigest()[:32]
-            
-            logger.info(f"Simulated Irys upload for username '{username}' with tx ID: {mock_tx_id}")
-            
-            # Store in a simple in-memory cache for demo purposes
-            # In production, this would be the actual Irys transaction ID
-            if not hasattr(self, '_storage'):
-                self._storage = {}
-            
-            self._storage[normalized_username] = {
-                "id": mock_tx_id,
-                "username": normalized_username,
-                "owner": normalized_owner,
-                "timestamp": timestamp,
-                "data": data
-            }
-            
-            return {
-                "success": True,
-                "id": mock_tx_id,
-                "username": normalized_username,
-                "owner": normalized_owner,
-                "timestamp": timestamp
-            }
+            # Call the Node.js helper service
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    "http://localhost:3002/upload",
+                    json=upload_data,
+                    headers={"Content-Type": "application/json"},
+                    timeout=30.0
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    logger.info(f"Successfully uploaded username '{username}' with tx ID: {result['id']}")
+                    return result
+                else:
+                    error_detail = response.text
+                    logger.error(f"Irys helper service error: {error_detail}")
+                    return {"success": False, "error": f"Upload failed: {error_detail}"}
             
         except Exception as error:
             logger.error(f"Upload error: {error}")
