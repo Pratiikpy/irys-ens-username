@@ -21,6 +21,9 @@ const initializeIrys = async () => {
       network: 'devnet', // Use devnet for free uploads
       token: 'ethereum', // Use ethereum for devnet
       key: privateKey,
+      config: {
+        providerUrl: 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161', // Sepolia testnet RPC
+      },
     });
 
     console.log('✅ Irys client initialized successfully');
